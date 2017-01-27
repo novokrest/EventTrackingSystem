@@ -73,21 +73,7 @@ public class AvlTree<Key extends Comparable<Key>, Value extends NumberEx> {
         removeFoundNode(node);
     }
 
-    public void remove(Key k) {
-        AvlNode<Key, Value> p = found(k);
-        if (p != null) {
-            removeFoundNode(p);
-        }
-    }
-
-    public void removeLessOrEqual(Key k) {
-        AvlNode<Key, Value> p = found(k);
-        if (p != null) {
-            removeFoundNodeAndLeftSubTree(p);
-        }
-    }
-
-    public void removeFoundNode(AvlNode<Key, Value> q) {
+    private void removeFoundNode(AvlNode<Key, Value> q) {
         AvlNode<Key, Value> r;
         if(q.left == null || q.right == null) {
             if(q.parent == null) {
@@ -121,23 +107,8 @@ public class AvlTree<Key extends Comparable<Key>, Value extends NumberEx> {
             }
             recursiveBalance(r.parent);
         }
-    }
 
-    public void removeFoundNodeAndLeftSubTree(AvlNode<Key, Value> p) {
-        if (p.parent == null) {
-            root = null;
-            return;
-        }
-
-        AvlNode<Key, Value> parent = p.parent;
-        if (parent.left == p) {
-            parent.left = p.right;
-        }
-        else {
-            parent.right = p.right;
-        }
-
-        recursiveBalance(parent);
+        --size;
     }
 
     public Value foundValue(Key k) {
