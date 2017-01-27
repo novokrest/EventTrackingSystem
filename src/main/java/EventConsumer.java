@@ -19,7 +19,6 @@ public class EventConsumer implements Runnable {
             }
             waitForNext = result.isSuccess();
         }
-        System.out.println(String.format("%d stopped", Thread.currentThread().getId()));
     }
 
     private TakeNextEventResult takeNextEvent() {
