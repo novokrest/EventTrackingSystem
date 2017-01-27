@@ -61,7 +61,7 @@ public class ConcurrentEventTracker implements EventTracker {
         synchronized (lock) {
             while (getEventsCountProcessing > 0) {
                 try {
-                    wait();
+                    lock.wait();
                 } catch (InterruptedException e) {
                     // TODO: log exception
                 }
@@ -73,7 +73,7 @@ public class ConcurrentEventTracker implements EventTracker {
     private void stopRegisterEventProcessing() {
         synchronized (lock) {
             --registerEventProcessing;
-            notifyAll();
+            lock.notifyAll();
         }
     }
 
@@ -105,7 +105,7 @@ public class ConcurrentEventTracker implements EventTracker {
         synchronized (lock) {
             while (registerEventProcessing > 0) {
                 try {
-                    wait();
+                    lock.wait();
                 } catch (InterruptedException e) {
                     // TODO: log exception
                 }
@@ -117,7 +117,7 @@ public class ConcurrentEventTracker implements EventTracker {
     private void stopGetEventsCountProcessing() {
         synchronized (lock) {
             --getEventsCountProcessing;
-            notifyAll();
+            lock.notifyAll();
         }
     }
 }
