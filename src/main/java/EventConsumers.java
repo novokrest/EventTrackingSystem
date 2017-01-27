@@ -12,29 +12,30 @@ public class EventConsumers {
     private final EventConsumersStopper stopper;
     private List<Thread> workers;
 
-    public static EventConsumers create(int consumersCount, List<BlockingQueue<Long>> queues) {
+    public static EventConsumers create(int consumersCount, List<BlockingQueue<Long>> queues, EventRegistry registry) {
         List<EventConsumer> eventConsumers = new ArrayList<>(consumersCount);
         CountableCollection<BlockingQueue<Long>> consumersCountForQueue = new CountableCollectionImpl<>(queues.size());
 
-        createEventConsumers(consumersCount, queues, eventConsumers, consumersCountForQueue);
+        createEventConsumers(consumersCount, queues, registry, eventConsumers, consumersCountForQueue);
         EventConsumersStopper stopper = new EventConsumersStopper(consumersCountForQueue);
 
         return new EventConsumers(eventConsumers, stopper);
     }
 
     private static void createEventConsumers(int consumersCount, List<BlockingQueue<Long>> queues,
+                                             EventRegistry registry,
                                              List<EventConsumer> eventConsumers,
                                              CountableCollection<BlockingQueue<Long>> consumersCountForQueue ) {
         for (int i = 0; i < consumersCount; ++i) {
             BlockingQueue<Long> queue = queues.get(i % queues.size());
-            eventConsumers.add(createEventConsumer(queue));
+            eventConsumers.add(createEventConsumer(queue, registry));
             consumersCountForQueue.add(queue, 1);
         }
     }
 
-    private static EventConsumer createEventConsumer(BlockingQueue<Long> queue) {
+    private static EventConsumer createEventConsumer(BlockingQueue<Long> queue, EventRegistry registry) {
         EventTimeProvider provider = new EventTimeProvider(queue);
-        EventHandler handler = new EventHandler();
+        EventHandler handler = new EventHandler(registry);
         return new EventConsumer(provider, handler);
     }
 

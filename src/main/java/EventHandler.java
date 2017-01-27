@@ -1,6 +1,12 @@
 
 public class EventHandler {
-    public void handleEvent(long eventTime) {
+    private final EventRegistry registry;
 
+    public EventHandler(EventRegistry registry) {
+        this.registry = registry;
+    }
+
+    public void handleEvent(long eventTime) {
+        registry.registerEvent(eventTime);
     }
 }

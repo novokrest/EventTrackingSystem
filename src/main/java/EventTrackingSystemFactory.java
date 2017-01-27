@@ -9,6 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class EventTrackingSystemFactory {
     private final EventRegisterer eventRegisterer;
     private final EventConsumers eventConsumers;
+    private final EventRegistry eventRegistry;
 
     public static EventTrackingSystemFactory createDefault() {
         int processors = Runtime.getRuntime().availableProcessors();
@@ -27,7 +28,8 @@ public class EventTrackingSystemFactory {
         Verifiers.verify(workersCount >= queuesCount, "Workers count must be equal or greater to queues count");
 
         List<BlockingQueue<Long>> queues = createQueues(queuesCount, queueSize);
-        eventConsumers = createEventConsumers(workersCount, queues);
+        eventRegistry = createEventRegistry();
+        eventConsumers = createEventConsumers(workersCount, queues, eventRegistry);
         eventRegisterer = createEventRegisterer(queues);
 
     }
@@ -40,6 +42,9 @@ public class EventTrackingSystemFactory {
         return eventConsumers;
     }
 
+    public EventRegistry getEventRegistry() {
+        return eventRegistry;
+    }
 
     private static List<BlockingQueue<Long>> createQueues(int queuesCount, int queueSize) {
         ArrayList<BlockingQueue<Long>> queues = new ArrayList<>(queuesCount);
@@ -49,13 +54,16 @@ public class EventTrackingSystemFactory {
         return queues;
     }
 
+    private static EventRegistry createEventRegistry() {
+        return new EventRegistryImpl();
+    }
+
+    private static EventConsumers createEventConsumers(int consumersCount, List<BlockingQueue<Long>> queues,
+                                                       EventRegistry registry) {
+        return EventConsumers.create(consumersCount, queues, registry);
+    }
+
     private static EventRegisterer createEventRegisterer(List<BlockingQueue<Long>> queues) {
         return new EventRegisterer(new MultiBlockingQueue<>(queues));
     }
-
-    private static EventConsumers createEventConsumers(int consumersCount, List<BlockingQueue<Long>> queues) {
-        return EventConsumers.create(consumersCount, queues);
-    }
-
-
 }
