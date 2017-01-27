@@ -78,15 +78,15 @@ public class ConcurrentEventTracker implements EventTracker {
     }
 
     public long getLastMinuteEventsCount() {
-        return 0;
+        return getEventsCount(WellKnownTimePeriod.ONE_MINUTE);
     }
 
     public long getLastHourEventsCount() {
-        return 0;
+        return getEventsCount(WellKnownTimePeriod.ONE_HOUR);
     }
 
     public long getLastDayEventsCount() {
-        return 0;
+        return getEventsCount(WellKnownTimePeriod.ONE_DAY);
     }
 
     private long getEventsCount(Duration period) {
