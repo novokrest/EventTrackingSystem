@@ -11,24 +11,25 @@ public class EventTrackingSystemFactory {
     private final EventConsumers eventConsumers;
     private final EventRegistry eventRegistry;
 
-    public static EventTrackingSystemFactory createDefault() {
+    public static EventTrackingSystemFactory createDefault(int intervalsCountMax) {
         int processors = Runtime.getRuntime().availableProcessors();
         processors = processors > 0 ? processors : 1;
 
         int queuesCount = processors / 2;
         queuesCount = queuesCount > 0 ? queuesCount : 1;
 
-        return new EventTrackingSystemFactory(processors, queuesCount, Integer.MAX_VALUE);
+        return new EventTrackingSystemFactory(intervalsCountMax, processors, queuesCount, Integer.MAX_VALUE);
     }
 
-    public EventTrackingSystemFactory(int workersCount, int queuesCount, int queueSize) {
+    public EventTrackingSystemFactory(int intervalsCountMax, int workersCount, int queuesCount, int queueSize) {
+        Verifiers.verifyArg(intervalsCountMax > 0, "intervalsCountMax", queuesCount);
         Verifiers.verifyArg(workersCount > 0, "workersCount", queuesCount);
         Verifiers.verifyArg(queuesCount > 0, "queuesCount", queuesCount);
         Verifiers.verifyArg(queueSize > 0, "queuesSize", queueSize);
         Verifiers.verify(workersCount >= queuesCount, "Workers count must be equal or greater to queues count");
 
         List<BlockingQueue<Long>> queues = createQueues(queuesCount, queueSize);
-        eventRegistry = createEventRegistry();
+        eventRegistry = createEventRegistry(intervalsCountMax);
         eventConsumers = createEventConsumers(workersCount, queues, eventRegistry);
         eventRegisterer = createEventRegisterer(queues);
 
@@ -54,8 +55,8 @@ public class EventTrackingSystemFactory {
         return queues;
     }
 
-    private static EventRegistry createEventRegistry() {
-        return new EventRegistryImpl();
+    private static EventRegistry createEventRegistry(int intervalsCountMax) {
+        return new EventRegistryImpl(intervalsCountMax);
     }
 
     private static EventConsumers createEventConsumers(int consumersCount, List<BlockingQueue<Long>> queues,

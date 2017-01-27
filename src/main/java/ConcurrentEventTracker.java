@@ -21,7 +21,11 @@ public class ConcurrentEventTracker implements EventTracker {
     }
 
     public ConcurrentEventTracker(int timePrecisionNs) {
-        this(timePrecisionNs, EventTrackingSystemFactory.createDefault());
+        this(timePrecisionNs, WellKnownTimePeriod.ONE_DAY.getNano() / timePrecisionNs + 1);
+    }
+
+    public ConcurrentEventTracker(int timePrecisionNs, int intervalsCountMax) {
+        this(timePrecisionNs, EventTrackingSystemFactory.createDefault(intervalsCountMax));
     }
 
     private ConcurrentEventTracker(int timePrecisionNs, EventTrackingSystemFactory factory) {
