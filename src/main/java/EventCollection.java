@@ -3,9 +3,9 @@ import core.AvlTree;
 
 public class EventCollection {
     private final AvlTree<Long, AtomicValue> tree = new AvlTree<>();
-    private final int maxSize;
+    private final long maxSize;
 
-    public EventCollection(int maxSize) {
+    public EventCollection(long maxSize) {
         this.maxSize = maxSize;
     }
 

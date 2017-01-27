@@ -2,7 +2,7 @@ public class EventRegistryImpl implements EventRegistry {
     private final Object lock = new Object();
     private final EventCollection eventCollection;
 
-    public EventRegistryImpl(int intervalsCountMax) {
+    public EventRegistryImpl(long intervalsCountMax) {
         eventCollection = new EventCollection(intervalsCountMax);
     }
 

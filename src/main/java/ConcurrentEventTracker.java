@@ -17,19 +17,19 @@ public class ConcurrentEventTracker implements EventTracker {
 
 
     public ConcurrentEventTracker() {
-        this(WellKnownTimePeriod.ONE_SECOND.dividedBy(10).getNano());
+        this(WellKnownTimePeriod.ONE_SECOND.dividedBy(10).toNanos());
     }
 
-    public ConcurrentEventTracker(int timePrecisionNs) {
-        this(timePrecisionNs, WellKnownTimePeriod.ONE_DAY.getNano() / timePrecisionNs + 1);
+    public ConcurrentEventTracker(long timePrecisionNs) {
+        this(timePrecisionNs, WellKnownTimePeriod.ONE_DAY.toNanos() / timePrecisionNs + 1);
     }
 
-    public ConcurrentEventTracker(int timePrecisionNs, int intervalsCountMax) {
-        this(timePrecisionNs, EventTrackingSystemFactory.createDefault(intervalsCountMax));
+    public ConcurrentEventTracker(long timePrecisionMs, long intervalsCountMax) {
+        this(timePrecisionMs, EventTrackingSystemFactory.createDefault(intervalsCountMax));
     }
 
-    private ConcurrentEventTracker(int timePrecisionNs, EventTrackingSystemFactory factory) {
-        intervalNumberCalculator = new TimeIntervalNumberCalculator(timePrecisionNs);
+    private ConcurrentEventTracker(long timePrecisionMs, EventTrackingSystemFactory factory) {
+        intervalNumberCalculator = new TimeIntervalNumberCalculator(timePrecisionMs);
         eventRegisterer = factory.getEventRegisterer();
         eventConsumers = factory.getEventConsumers();
         eventRegistry = factory.getEventRegistry();
@@ -47,7 +47,7 @@ public class ConcurrentEventTracker implements EventTracker {
         startRegisterEventProcessing();
 
         try {
-            long elapsedTime = timeWatcher.elapsedTime();
+            long elapsedTime = timeWatcher.elapsedTimeNs();
             long intervalNumber = intervalNumberCalculator.calculateIntervalNumber(elapsedTime);
             eventRegisterer.registerEvent(intervalNumber);
         } catch (InterruptedException e) {
@@ -93,7 +93,7 @@ public class ConcurrentEventTracker implements EventTracker {
         startGetEventsCountProcessing();
 
         try {
-            long startTime = timeWatcher.elapsedTime() - period.getNano();
+            long startTime = timeWatcher.elapsedTimeNs() - period.getNano();
             long startInterval = intervalNumberCalculator.calculateIntervalNumber(startTime);
             return eventRegistry.getEventsCountAppearedFrom(startInterval);
         } finally {

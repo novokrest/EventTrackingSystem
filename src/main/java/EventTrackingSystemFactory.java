@@ -11,7 +11,7 @@ public class EventTrackingSystemFactory {
     private final EventConsumers eventConsumers;
     private final EventRegistry eventRegistry;
 
-    public static EventTrackingSystemFactory createDefault(int intervalsCountMax) {
+    public static EventTrackingSystemFactory createDefault(long intervalsCountMax) {
         int processors = Runtime.getRuntime().availableProcessors();
         processors = processors > 0 ? processors : 1;
 
@@ -21,7 +21,7 @@ public class EventTrackingSystemFactory {
         return new EventTrackingSystemFactory(intervalsCountMax, processors, queuesCount, Integer.MAX_VALUE);
     }
 
-    public EventTrackingSystemFactory(int intervalsCountMax, int workersCount, int queuesCount, int queueSize) {
+    public EventTrackingSystemFactory(long intervalsCountMax, int workersCount, int queuesCount, int queueSize) {
         Verifiers.verifyArg(intervalsCountMax > 0, "intervalsCountMax", queuesCount);
         Verifiers.verifyArg(workersCount > 0, "workersCount", queuesCount);
         Verifiers.verifyArg(queuesCount > 0, "queuesCount", queuesCount);
@@ -55,7 +55,7 @@ public class EventTrackingSystemFactory {
         return queues;
     }
 
-    private static EventRegistry createEventRegistry(int intervalsCountMax) {
+    private static EventRegistry createEventRegistry(long intervalsCountMax) {
         return new EventRegistryImpl(intervalsCountMax);
     }
 

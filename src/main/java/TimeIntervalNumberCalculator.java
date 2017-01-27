@@ -1,15 +1,15 @@
 import core.Verifiers;
 
 public class TimeIntervalNumberCalculator {
-    private final int intervalLength;
+    private final long timeIntervalLengthNs;
 
-    public TimeIntervalNumberCalculator(int intervalLength) {
-        Verifiers.verify(intervalLength > 0, "Incorrect interval length: %d", intervalLength);
-        this.intervalLength = intervalLength;
+    public TimeIntervalNumberCalculator(long timeIntervalLengthNs) {
+        Verifiers.verify(timeIntervalLengthNs > 0, "Incorrect interval length: %d", timeIntervalLengthNs);
+        this.timeIntervalLengthNs = timeIntervalLengthNs;
     }
 
-    public long calculateIntervalNumber(long elapsed) {
-        Verifiers.verify(elapsed >= 0, "Incorrect elapsed time: %d", elapsed);
-        return (elapsed - (elapsed % intervalLength)) / intervalLength;
+    public long calculateIntervalNumber(long elapsedNs) {
+        Verifiers.verify(elapsedNs >= 0, "Incorrect elapsedNs time: %d", elapsedNs);
+        return (elapsedNs - (elapsedNs % timeIntervalLengthNs)) / timeIntervalLengthNs;
     }
 }

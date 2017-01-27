@@ -2,9 +2,9 @@ package core;
 
 public class AvlTree<Key extends Comparable<Key>, Value extends NumberEx> {
     private AvlNode<Key, Value> root;
-    private int size;
+    private long size;
 
-    public int size() {
+    public long size() {
         return size;
     }
 
@@ -247,7 +247,7 @@ public class AvlTree<Key extends Comparable<Key>, Value extends NumberEx> {
         int leftHeight = safeHeight(cur.left), rightHeight = safeHeight(cur.right);
         cur.height = Math.max(leftHeight, rightHeight) + 1;
         cur.balance = rightHeight - leftHeight;
-        cur.value.set(safeValue(cur.left) + safeValue(cur.right));
+        cur.value.set(safeValue(cur.left) + safeValue(cur.right) + 1);
     }
 
     private int safeHeight(AvlNode<Key, Value> cur) {
